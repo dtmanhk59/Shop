@@ -60,7 +60,27 @@ class UsersController extends AppController
         }
         $this->set(compact('user'));
     }
-
+    
+    public function apiAdd()
+    {
+        $user = $this->request->getHeaderLine('User-Agent');
+        $user = $this->Users->newEntity();
+        if ($this->request->is('post')) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            if ($this->Users->save($user)) {
+                $message = 'The user has been saved.';
+            }else{
+                $message = 'The user could not be saved. Please, try again.';
+            }
+            
+        }
+        $this->set([
+            'message' => $message,
+            'user' => $user,
+            '_serialize' => ['message', 'user']
+        ]);
+    }
+    
     /**
      * Edit method
      *
